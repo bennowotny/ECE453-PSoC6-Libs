@@ -43,22 +43,32 @@
 #include "cyhal.h"
 #include "cybsp.h"
 
+#include "main.h"
 
 int main(void)
 {
-    cy_rslt_t result;
 
-    /* Initialize the device and board peripherals */
-    result = cybsp_init() ;
-    if (result != CY_RSLT_SUCCESS)
-    {
-        CY_ASSERT(0);
-    }
-
+#if ENABLE_SERIAL_DEBUG
+    console_init();
     __enable_irq();
+    printf("\x1b[2J\x1b[;H");
+    printf("******************\n\r");
+    printf("* ECE453 Dev Platform\n\r");
+    printf("******************\n\r");
+#endif
+
+    leds_init();
+    push_button_init();
 
     for (;;)
     {
+    	if(ALERT_PUSH_BUTTON)
+    	{
+    		ALERT_PUSH_BUTTON = false;
+#if ENABLE_SERIAL_DEBUG
+    		printf("SW401 Pressed\n\r");
+#endif
+    	}
     }
 }
 
